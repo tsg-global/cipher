@@ -1,5 +1,5 @@
 defmodule Cipher.Helpers do
-  @get_env3 Application.get_env(:cipher, :get_env3)
+  @get_env Application.get_env(:cipher, :get_env)
 
   @moduledoc """
     require Cipher.Helpers, as: H  # the cool way
@@ -9,7 +9,10 @@ defmodule Cipher.Helpers do
     `Application.get_env( :myapp, :blah, :blah)` noise.
   """
   def env(key, default \\ nil), do: env(:cipher, key, default)
-  def env(app, key, default), do: @get_env3.(app, key, default)
+  def env(app, key, default) do
+    {module, funcname} = @get_env
+    :erlang.apply(module, funcname, [app, key, default])
+  end
 
   @doc """
     Spit to output any passed variable, with location information.
